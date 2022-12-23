@@ -6,7 +6,9 @@
  
  You must install the needed libraries first, which are numpy, scipy, resampy, and pyworld. To do that, you may run a regular pip installation:
  
- ```pip install numpy scipy resampy pyworld```
+```
+pip install numpy scipy resampy pyworld
+```
  
 ## Running in UTAU
  Download the `straycat.py` file and put it somewhere. Open your `.ust` file as a text file with whichever text editor. Change the `Tool2` resampler to the path of `straycat.py`. You can now open the `.ust` and use `straycat.py` as a resampler. You may need to press cancel for the project properties when UTAU shows the project properties panel.
