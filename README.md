@@ -14,7 +14,8 @@
 ## Running throught terminal
  Most resamplers can take arguments to render a sample. This resampler only reads the terminal arguments.
  
-```usage: straycat in_file out_file pitch velocity [flags] [offset] [length] [consonant] [cutoff] [volume] [modulation] [tempo] [pitch_string]
+```
+usage: straycat in_file out_file pitch velocity [flags] [offset] [length] [consonant] [cutoff] [volume] [modulation] [tempo] [pitch_string]
 
 Resamples using the WORLD Vocoder.
 
@@ -33,7 +34,8 @@ optional arguments:
 	volume		The volume of the render in percentage. (default: 100)
 	modulation	The pitch modulation of the render in percentage. (default: 0)
 	tempo		The tempo of the render. Needs to have a ! at the start. (default: !100)
-	pitch_string	The UTAU pitchbend parameter written in Base64 with RLE encoding. (default: AA)```
+	pitch_string	The UTAU pitchbend parameter written in Base64 with RLE encoding. (default: AA)
+```
 	
 ## straycat flags
 
