@@ -42,7 +42,7 @@ f0_floor = world.default_f0_floor
 f0_ceil = 1760
 
 # Flags
-flags = ['fe', 'fl', 'fo', 'fv', 've', 'vo', 't', 'A', 'B', 'G', 'P']
+flags = ['fe', 'fl', 'fo', 'fv', 'fp', 've', 'vo', 't', 'A', 'B', 'G', 'P', 'S']
 flag_re = '|'.join(flags)
 flag_re = f'({flag_re})([+-]?\\d+)?'
 flag_re = re.compile(flag_re)
@@ -536,7 +536,7 @@ class Resampler:
             t_stretch = np.linspace(t_pivot, t_area[-1], num=length_req)
         
         t_render = np.concatenate([t_consonant, t_stretch]) # concatenate for interpolation
-        con = len(t_consonant)
+        con = len(t_consonant) # new placement of the consonant
         
         logging.info('Interpolating WORLD features.')
         # Interpolate render area
@@ -571,18 +571,22 @@ class Resampler:
             fry = self.flags['fe'] / 1000
             fry_len = 0.075
             fry_offset = 0
+            fry_pitch = f0_floor
             if 'fl' in self.flags.keys(): # check length flag
                 fry_len = max(self.flags['fl'] / 1000, 0.001)
 
             if 'fo' in self.flags.keys():
                 fry_offset = self.flags['fo'] / 1000
+
+            if 'fp' in self.flags.keys():
+                fry_pitch = max(self.flags['fp'], 0)
             
             # Prepare envelope
             t_fry = t - t[con] - fry_offset # temporal positions centered around the consonant shifted by offset
             amt = smoothstep(-fry - fry_len / 2, -fry + fry_len / 2, t_fry) * smoothstep(fry_len / 2, -fry_len / 2, t_fry) #fry envelope
 
-            f0_render = f0_render * (1 - amt) + f0_floor * amt # mix low F0 for fry
-                
+            f0_render = f0_render * (1 - amt) + fry_pitch * amt # mix low F0 for fry
+
         # Breathiness flag
         if 'B' in self.flags.keys():
             breath = self.flags['B']
@@ -599,6 +603,12 @@ class Resampler:
         render = world.synthesize(f0_render, sp_render, ap_render, default_fs)
         
         ### AFTER RENDER FLAGS ###
+        # Max aperiodicity flag
+        if 'S' in self.flags.keys():
+            amt = np.clip(self.flags['S'] / 100, 0, 1)
+            render_ap = world.synthesize(f0_render, sp_render, np.ones(ap_render.shape), default_fs)
+            render = render * (1 - amt) + render_ap * amt
+        
         if breath > 50: # mix max breathiness signal
             logging.info('Raising breathiness.')
             breath = np.clip((breath - 50) / 50, 0, 1)
@@ -644,7 +654,15 @@ class Resampler:
             
             amt = smoothstep(-end_breath / 2, end_breath / 2, t_sample - t[con] - offset) # smoothstep with consonant at 0.5
             render = render * (1 - amt) + render_breath * amt # mix sample based on envelope
+            
+        peak = 1 # Peak "compression" but it's actually just normalization LOL
+        if 'P' in self.flags.keys():
+            peak = np.clip(self.flags['P'] / 100, 0, 1)
 
+        normal = 0.9 * render / np.max(np.abs(render))
+        render = render * (1 - peak) + normal * peak
+
+        ### AFTER PEAK NORMALIZATION ###
         # Tremolo flag
         if 'A' in self.flags.keys():
             logging.info('Adding tremolo.')
@@ -656,20 +674,13 @@ class Resampler:
 
             amt = np.maximum(tremolo * vibrato + 1, 0)
             render = render * amt
-            
-        peak = 1 # Peak "compression" but it's actually just normalization LOL
-        if 'P' in self.flags.keys():
-            peak = np.clip(self.flags['P'] / 100, 0, 1)
-
-        normal = 0.9 * render / np.max(np.abs(render))
-        render = render * (1 - peak) + normal * peak
         
         render *= vol # volume
         if self.out_file != 'nul':
             save_wav(self.out_file, render)
 
 if __name__ == '__main__':
-    logging.info('straycat 0.1.0')
+    logging.info('straycat 0.1.1')
     try:
         Resampler(*sys.argv[1:])
     except Exception as e:
