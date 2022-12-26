@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.1.2] - 2022-26-12
+
+## Fixed
+ - Skipping rendering if out file is `nul` to not pull up an error when generating `.sc.npz` files through the short frq generation commant UTAU uses. It still generates the `.sc.npz` but I just don't like how unclean it is...
+
 ## [0.1.1] - 2022-24-12
 
 ### Added

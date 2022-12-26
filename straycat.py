@@ -10,6 +10,7 @@ import scipy.interpolate as interp # Interpolator for feats
 import resampy # Resampler (as in sampling rate stuff)
 import re
 
+version = '0.1.2'
 help_string = '''usage: straycat in_file out_file pitch velocity [flags] [offset] [length] [consonant] [cutoff] [volume] [modulation] [tempo] [pitch_string]
 
 Resamples using the WORLD Vocoder.
@@ -490,6 +491,10 @@ class Resampler:
         -------
         None
         """
+        if self.out_file == 'nul':
+            logging.info('Null output file. Skipping...')
+            return
+        
         # Convert cut times to units of 5 ms
         logging.info('Calculating timing.')
         start = int(np.floor(self.offset / 5))
@@ -676,11 +681,10 @@ class Resampler:
             render = render * amt
         
         render *= vol # volume
-        if self.out_file != 'nul':
-            save_wav(self.out_file, render)
+        save_wav(self.out_file, render)
 
 if __name__ == '__main__':
-    logging.info('straycat 0.1.1')
+    logging.info(f'straycat {version}')
     try:
         Resampler(*sys.argv[1:])
     except Exception as e:
