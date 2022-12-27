@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.1.3] - 2022-27-12
+
+## Changed
+ - Changed P flag default to 86. Makes it so that the A flag doesn't clip as much. Still does though.
+
 ## [0.1.2] - 2022-26-12
 
 ## Fixed

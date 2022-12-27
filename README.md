@@ -69,7 +69,7 @@ optional arguments:
  Breathiness flag. Values lower than 50 lowers breathiness, but it does not have much effect. Values higher than 50 mixes an unvoiced render in, with 100 as being only the unvoiced render. Default is 50.
 
 ### P[0, 100]
- Peak normalization flag. This flag normalizes the sample to have the same peak volume for each note. At 0, this flag does not touch the volume of the render at all. Default is 100.
+ Peak normalization flag. This flag normalizes the sample to have the same peak volume for each note. At 0, this flag does not touch the volume of the render at all. Default is 86.
  
 ### A(-inf, +inf)
  Tremolo flag. This flag tries to isolate the vibrato from the pitchbend and modulates the volume based on this isolated vibrato, which means it may also react on drawn vibrato and more. Default is 0. This flag is applied after the peak normalization flag, so it may cause clipping issues.

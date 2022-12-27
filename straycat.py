@@ -660,7 +660,7 @@ class Resampler:
             amt = smoothstep(-end_breath / 2, end_breath / 2, t_sample - t[con] - offset) # smoothstep with consonant at 0.5
             render = render * (1 - amt) + render_breath * amt # mix sample based on envelope
             
-        peak = 1 # Peak "compression" but it's actually just normalization LOL
+        peak = 0.86 # Peak "compression" but it's actually just normalization LOL
         if 'P' in self.flags.keys():
             peak = np.clip(self.flags['P'] / 100, 0, 1)
 
