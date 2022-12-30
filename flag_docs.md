@@ -23,6 +23,9 @@
  **ve(-inf, +inf)** is the main flag to enable this feature. ve is the length of the transition from voiced to unvoiced centered at the consonant point. Positive values make the area after the consonant unvoiced and negative values make the area before the consonant unvoiced.
 
  **vo(-inf, +inf)** is the offset of the transition from the consonant in milliseconds. Negative values move it earlier. Default is 0.
+ 
+### g(-inf, +inf)
+ Gender/Formant shift flag. Shifts the formant of the render, more commonly known as adding gender. 10 units in this flag is equivalent to pitching the sample a semitone without formant preservation and pitching it back with formant preservation.
 
 ### B[0, 100]
  Breathiness flag. Values lower than 50 lowers breathiness, but it does not have much effect. Values higher than 50 mixes an unvoiced render in, with 100 as being only the unvoiced render. Default is 50.

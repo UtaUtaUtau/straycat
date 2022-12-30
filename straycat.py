@@ -10,7 +10,7 @@ import scipy.interpolate as interp # Interpolator for feats
 import resampy # Resampler (as in sampling rate stuff)
 import re
 
-version = '0.1.3'
+version = '0.2.0'
 help_string = '''usage: straycat in_file out_file pitch velocity [flags] [offset] [length] [consonant] [cutoff] [volume] [modulation] [tempo] [pitch_string]
 
 Resamples using the WORLD Vocoder.
@@ -43,7 +43,7 @@ f0_floor = world.default_f0_floor
 f0_ceil = 1760
 
 # Flags
-flags = ['fe', 'fl', 'fo', 'fv', 'fp', 've', 'vo', 't', 'A', 'B', 'G', 'P', 'S']
+flags = ['fe', 'fl', 'fo', 'fv', 'fp', 've', 'vo', 'g', 't', 'A', 'B', 'G', 'P', 'S']
 flag_re = '|'.join(flags)
 flag_re = f'({flag_re})([+-]?\\d+)?'
 flag_re = re.compile(flag_re)
@@ -591,6 +591,17 @@ class Resampler:
             amt = smoothstep(-fry - fry_len / 2, -fry + fry_len / 2, t_fry) * smoothstep(fry_len / 2, -fry_len / 2, t_fry) #fry envelope
 
             f0_render = f0_render * (1 - amt) + fry_pitch * amt # mix low F0 for fry
+
+        # Gender/Formant shift flag
+        if 'g' in self.flags.keys():
+            gender = np.exp2(self.flags['g'] / 120)
+
+            freq_x = np.linspace(0, 1, fft_size // 2 + 1) # map spectral envelope by frequency instead of time
+            sp_render_interp = interp.Akima1DInterpolator(freq_x, sp_render, axis=1)
+
+            # stretch spectral envelope depending on gender
+            freq_x = np.clip(np.linspace(0, gender, fft_size // 2 + 1), 0, 1) # clip axis because Akima1DInterpolator doesn't extrapolate (or even just extend)
+            sp_render = sp_render_interp(freq_x).copy(order='C')
 
         # Breathiness flag
         if 'B' in self.flags.keys():
