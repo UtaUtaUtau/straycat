@@ -5,7 +5,7 @@
 ## Added
  - Added the g flag.
 
-## Fixed
+## Changed
  - Sped up functions using `numba`. Might've helped feature generation and some flags. The functions sped up and their usages are:
 	- `smoothstep(edge0, edge1, x)`
 		- Used for flags with "envelopes" (vocal fry flag, voicing flag)
@@ -13,7 +13,6 @@
 		- Used generally for clipping things within range. `numpy.clip` exists but for some reason numba made it faster.
 	- `base_frq(f0, f0_min=None, f0_max=None)`
 		- Used to get the base frequency from the frequency information. Feature generation might be a little faster because of this.
- - Changed interpolator for pitchbend from `UnivarateSpline` to `Akima1DInterpolator`
  - Reworked timing system to be more robust.
  
 ## [0.1.3] - 2022-27-12
