@@ -57,7 +57,7 @@ def smoothstep(edge0, edge1, x):
     if x < 0:
         x = 0
     elif x > 1:
-        x = 0
+        x = 1
     return 3*x*x - 2*x*x*x
 
 @vectorize([float64(float64, float64, float64)], nopython=True)
