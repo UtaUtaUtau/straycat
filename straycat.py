@@ -507,33 +507,33 @@ class Resampler:
             logging.info('Null output file. Skipping...')
             return
         
-        # Convert cut times to units of 5 ms
-        logging.info('Calculating timing.')
-        start = int(np.floor(self.offset / 5))
-        if self.cutoff >= 0:
-            end = -int(np.floor(self.cutoff / 5)) - 1
-        else:
-            end = int(np.ceil((self.offset - self.cutoff) / 5))
-        con = int(self.consonant / 5)
-
         # Convert percentages to decimal
-        vel = np.exp2(1 - self.velocity / 100)
+        vel = np.exp2(1 - self.velocity / 100) # convel is more a multiplier...
         vol = self.volume / 100
         mod = self.modulation / 100
 
         logging.info('Decoding WORLD features.')
-        # Recalculate spectral envelope and aperiodicity and trim to length
-        sp = world.decode_spectral_envelope(features['mgc'], default_fs, fft_size)[start:end]
-        ap = world.decode_aperiodicity(features['bap'], default_fs, fft_size)[start:end]
+        # Recalculate spectral envelope and aperiodicity
+        sp = world.decode_spectral_envelope(features['mgc'], default_fs, fft_size)
+        ap = world.decode_aperiodicity(features['bap'], default_fs, fft_size)
 
         # Turn F0 to offset map for modulation
         base_f0 = features['base']
-        f0 = features['f0'][start:end]
+        f0 = features['f0']
         f0[f0 == 0] = base_f0
         f0_off = f0 - base_f0
         
         # Calculate temporal positions
         t_area = np.arange(len(f0)) * 0.005
+
+        logging.info('Calculating timing.') # use seconds instead of 5ms terms cuz someone gave me negative offsets </3
+        start = self.offset / 1000 # start time
+        end = self.cutoff / 1000 # end time
+        if self.cutoff < 0: # deal with relative end time
+            end = start - end
+        else:
+            end = t_area[-1] - end
+        con = start + self.consonant / 1000 # consonant
 
         logging.info('Preparing interpolators.')
         # Make interpolators to render new areas
@@ -542,18 +542,19 @@ class Resampler:
         ap_interp = interp.Akima1DInterpolator(t_area, ap)
 
         # Make new temporal positions array for stretching
-        t_pivot = t_area[con] # temporal position pivot for stretched/unstretched area
-        t_consonant = np.linspace(0, t_pivot, num=int(vel * self.consonant / 5), endpoint=False) # temporal positions of the unstretched area. can be stretched because of velocity
+        t_consonant = np.linspace(start, con, num=int(vel * self.consonant / 5), endpoint=False) # temporal positions of the unstretched area. can be stretched because of velocity
         # stretched area only needs to stretch if the length required is longer than the stretch area
-        length_req = int(self.length / 5)
-        stretch_length = len(f0) - con
+        length_req = self.length / 1000
+        stretch_length = end - con
         if stretch_length > length_req:
-            t_stretch = t_area[con:con+length_req]
+            con_idx = int(200 * con) # position of consonant in the temporal positions array ??
+            len_idx = int(200 * length_req) # length of length required by 5ms frames
+            t_stretch = t_area[con_idx:con_idx+len_idx]
         else:
-            t_stretch = np.linspace(t_pivot, t_area[-1], num=length_req)
+            t_stretch = np.linspace(con, end, num=int(200 * length_req))
         
-        t_render = np.concatenate([t_consonant, t_stretch]) # concatenate for interpolation
-        con = len(t_consonant) # new placement of the consonant
+        t_render = clip(np.concatenate([t_consonant, t_stretch]), 0, t_area[-1]) # concatenate and clip for interpolation
+        con = len(t_consonant) # new placement of the consonant, now in 5ms frame terms...
         
         logging.info('Interpolating WORLD features.')
         # Interpolate render area
@@ -606,6 +607,7 @@ class Resampler:
 
         # Gender/Formant shift flag
         if 'g' in self.flags.keys():
+            logging.info('Shifting formants.')
             gender = np.exp2(self.flags['g'] / 120)
 
             freq_x = np.linspace(0, 1, fft_size // 2 + 1) # map spectral envelope by frequency instead of time
