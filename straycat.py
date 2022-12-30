@@ -4,6 +4,7 @@ import sys
 import os
 import pyworld as world # Vocoder
 import numpy as np # Numpy <3
+from numba import njit, vectorize, float64, optional # JIT compilation stuff (and ufuncs)
 import scipy.io.wavfile as wav # WAV read + write
 import scipy.signal as signal # for filtering
 import scipy.interpolate as interp # Interpolator for feats
@@ -49,10 +50,24 @@ flag_re = f'({flag_re})([+-]?\\d+)?'
 flag_re = re.compile(flag_re)
 
 # Utility functions
+@vectorize([float64(float64, float64, float64)], nopython=True)
 def smoothstep(edge0, edge1, x):
     """Smoothstep function from GLSL that works with numpy arrays."""
-    x = np.clip((x - edge0) / (edge1 - edge0), 0, 1)
+    x = (x - edge0) / (edge1 - edge0)
+    if x < 0:
+        x = 0
+    elif x > 1:
+        x = 0
     return 3*x*x - 2*x*x*x
+
+@vectorize([float64(float64, float64, float64)], nopython=True)
+def clip(x, x_min, x_max):
+    """Clips function. Faster than np.clip somehow"""
+    if x < x_min:
+        return x_min
+    if x > x_max:
+        return x_max
+    return x
 
 def highpass(x, fs=44100, cutoff=3000, order=1):
     """Butterworth highpass with doubled order because of sosfiltfilt."""
@@ -228,12 +243,41 @@ def save_wav(loc, x):
     None
     """
     info = np.iinfo(np.int16)
-    x = np.clip(x * info.max, info.min, info.max).astype(np.int16)
+    x = clip(x * info.max, info.min, info.max).astype(np.int16)
     wav.write(loc, default_fs, x)
 
 # Processing WORLD things
+@njit(float64(float64[:], optional(float64), optional(float64)))
+def _jit_base_frq(f0, f0_min, f0_max):
+    q = 0
+    avg_frq = 0
+    tally = 0
+    N = len(f0)
+
+    if f0_min is None:
+        f0_min = f0_floor
+
+    if f0_max is None:
+        f0_max = f0_ceil
+    
+    for i in range(N):
+        if f0[i] >= f0_min and f0[i] <= f0_max:
+            if i < 1:
+                q = f0[i+1] - f0[i]
+            elif i == N - 1:
+                q = f0[i] - f0[i-1]
+            else:
+                q = (f0[i+1] - f0[i-1]) / 2
+            weight = 2 ** (-q * q)
+            avg_frq += f0[i] * weight
+            tally += weight
+
+    if tally > 0:
+        avg_frq /= tally
+    return avg_frq
+
 def base_frq(f0, f0_min=None, f0_max=None):
-    """Get average F0 with a stronger bias on flatter areas. Port from https://github.com/titinko/frq0003gen
+    """Get average F0 with a stronger bias on flatter areas. 
 
     Parameters
     ----------
@@ -251,39 +295,7 @@ def base_frq(f0, f0_min=None, f0_max=None):
     float
         Average F0.
     """
-    value = 0
-    r = 1
-    p = [0, 0, 0, 0, 0, 0]
-    q = 0
-    avg_frq = 0
-    base_value = 0
-
-    if not f0_min:
-        f0_min = f0_floor
-
-    if not f0_max:
-        f0_max = f0_ceil
-    
-    for i in range(0, len(f0)):
-        value = f0[i]
-        if value <= f0_max and value >= f0_min:
-            r = 1
-
-            for j in range(0, 6):
-                if i > j:
-                    q = f0[i - j - 1] - value
-                    p[j] = value / (value + q * q)
-                else:
-                    p[j] = 1 / (1 + value)
-                    
-                r *= p[j]
-
-            avg_frq += value * r
-            base_value += r
-
-    if base_value > 0:
-        avg_frq /= base_value
-    return avg_frq
+    return _jit_base_frq(f0, f0_min, f0_max)
 
 class Resampler:
     """
@@ -547,7 +559,7 @@ class Resampler:
         # Interpolate render area
         f0_off_render = f0_off_interp(t_render)
         sp_render = sp_interp(t_render)
-        ap_render = np.clip(ap_interp(t_render), 0, 1) # aperiodicity freaks out if not within [0, 1] range
+        ap_render = clip(ap_interp(t_render), 0, 1) # aperiodicity freaks out if not within [0, 1] range
 
         # Calculate new temporal positions for tuning
         t = np.arange(len(sp_render)) * 0.005
@@ -556,8 +568,8 @@ class Resampler:
         # Calculate pitch in MIDI note number terms
         pitch = self.pitchbend / 100 + self.pitch
         t_pitch = 60 * np.arange(len(pitch)) / (self.tempo * 96)
-        pitch_interp = interp.UnivariateSpline(t_pitch, pitch, s=0, ext='const')
-        pitch_render = pitch_interp(t)
+        pitch_interp = interp.Akima1DInterpolator(t_pitch, pitch)
+        pitch_render = pitch_interp(clip(t, 0, t_pitch[-1]))
         
         logging.info('Checking flags.')
         # Flag interpretation area
@@ -600,7 +612,7 @@ class Resampler:
             sp_render_interp = interp.Akima1DInterpolator(freq_x, sp_render, axis=1)
 
             # stretch spectral envelope depending on gender
-            freq_x = np.clip(np.linspace(0, gender, fft_size // 2 + 1), 0, 1) # clip axis because Akima1DInterpolator doesn't extrapolate (or even just extend)
+            freq_x = clip(np.linspace(0, gender, fft_size // 2 + 1), 0, 1) # clip axis because Akima1DInterpolator doesn't extrapolate (or even just extend)
             sp_render = sp_render_interp(freq_x).copy(order='C')
 
         # Breathiness flag
@@ -608,7 +620,7 @@ class Resampler:
             breath = self.flags['B']
             if breath <= 50: # Raise power to flatten smaller areas and keep max aperiodicity
                 logging.info('Lowering breathiness.')
-                breath = np.clip(2 * breath / 50, 0, 1)
+                breath = clip(2 * breath / 50, 0, 1)
                 ap_render = np.power(ap_render, 5 * (1 - breath) + 1)
         else:
             breath = 0
@@ -621,13 +633,13 @@ class Resampler:
         ### AFTER RENDER FLAGS ###
         # Max aperiodicity flag
         if 'S' in self.flags.keys():
-            amt = np.clip(self.flags['S'] / 100, 0, 1)
+            amt = clip(self.flags['S'] / 100, 0, 1)
             render_ap = world.synthesize(f0_render, sp_render, np.ones(ap_render.shape), default_fs)
             render = render * (1 - amt) + render_ap * amt
         
         if breath > 50: # mix max breathiness signal
             logging.info('Raising breathiness.')
-            breath = np.clip((breath - 50) / 50, 0, 1)
+            breath = clip((breath - 50) / 50, 0, 1)
             render_breath = world.synthesize(f0_render, sp_render, np.ones(ap_render.shape), default_fs) # render with all max aperiodicity
             render_breath = highpass(render_breath)
             
@@ -647,7 +659,7 @@ class Resampler:
                 fry_offset = self.flags['fo'] / 1000
 
             if 'fv' in self.flags.keys():
-                fry_vol = np.clip(self.flags['fv'] / 100, 0, 1)
+                fry_vol = clip(self.flags['fv'] / 100, 0, 1)
             
             # Prepare envelope
             t_fry = t_sample - t[con] - fry_offset # temporal positions centered around the consonant shifted by offset
@@ -673,7 +685,7 @@ class Resampler:
             
         peak = 0.86 # Peak "compression" but it's actually just normalization LOL
         if 'P' in self.flags.keys():
-            peak = np.clip(self.flags['P'] / 100, 0, 1)
+            peak = clip(self.flags['P'] / 100, 0, 1)
 
         normal = 0.9 * render / np.max(np.abs(render))
         render = render * (1 - peak) + normal * peak

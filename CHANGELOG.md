@@ -1,5 +1,19 @@
 # Changelog
 
+## [Unreleased] - 2022-30-12
+
+## Added
+ - Added the g flag.
+
+## Fixed
+ - Sped up functions using `numba`. Might've helped feature generation and some flags. The functions sped up and their usages are:
+	- `smoothstep(edge0, edge1, x)`
+		- Used for flags with "envelopes" (vocal fry flag, voicing flag)
+	- `clip(x, x_min, x_max)`
+		- Used generally for clipping things within range. `numpy.clip` exists but for some reason numba made it faster.
+	- `base_frq(f0, f0_min=None, f0_max=None)`
+		- Used to get the base frequency from the frequency information. Feature generation might be a little faster because of this.
+
 ## [0.1.3] - 2022-27-12
 
 ## Changed
