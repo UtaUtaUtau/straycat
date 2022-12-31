@@ -689,7 +689,7 @@ class Resampler:
         if 'P' in self.flags.keys():
             peak = clip(self.flags['P'] / 100, 0, 1)
 
-        normal = 0.9 * render / np.max(np.abs(render))
+        normal = 0.6 * render / np.max(np.abs(render))
         render = render * (1 - peak) + normal * peak
 
         ### AFTER PEAK NORMALIZATION ###

@@ -6,6 +6,8 @@
  - Added the g flag.
 
 ## Changed
+ - Changed the algorithm of `base_frq` to be more sensitive to flatter regions.
+ - Changed peak normalization volume to make renders less loud and make early clipping for the A flag happen less.
  - Sped up functions using `numba`. Might've helped feature generation and some flags. The functions sped up and their usages are:
 	- `smoothstep(edge0, edge1, x)`
 		- Used for flags with "envelopes" (vocal fry flag, voicing flag)
