@@ -38,7 +38,34 @@ optional arguments:
 	tempo		The tempo of the render. Needs to have a ! at the start. (default: !100)
 	pitch_string	The UTAU pitchbend parameter written in Base64 with RLE encoding. (default: AA)
 ```
-	
+
+# Example Renders
+
+**Voicebank**: 櫻花アリス -吾亦紅- / Ouka Alice -Waremokou-
+
+https://user-images.githubusercontent.com/29729824/210136909-53b8671c-13c1-440a-af3e-fd9069888d77.mp4
+
+**Voicebank**: 紅 通常 VCV / Kurenai Normal VCV
+
+https://user-images.githubusercontent.com/29729824/210136929-263e7ef3-746c-4369-97eb-1db4e0537a81.mp4
+
+**Voicebank**: 戯白メリー 太神楽 / Kohaku Merry Daikagura
+
+https://user-images.githubusercontent.com/29729824/210136943-09a9a80a-31ca-4b82-9059-0066d3053a5f.mp4
+
+**Voicebank**: 弄燠音レタ Feuer / Root Leta Feuer
+
+https://user-images.githubusercontent.com/29729824/210136952-ac0e3ad3-6658-400a-a48a-814a43647e6d.mp4
+
+**Voicebank**: 吼音ブシ-武- / Quon Bushi -武-
+
+https://user-images.githubusercontent.com/29729824/210136988-fdeba35a-da8d-4983-8f0c-d6953f86b6cc.mp4
+
+**Voicebank**: 松木マックス SPRUCE(NEO)v2.0 / Matsuki Max SPRUCE (NEO) v2.0
+
+https://user-images.githubusercontent.com/29729824/210136998-a0e9fde8-3445-42f4-9a29-64fc54516c9f.mp4
+
+
 # straycat flags
 
  This is the main documentation of the flags available in straycat.
