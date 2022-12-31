@@ -41,6 +41,8 @@ optional arguments:
 
 # Example Renders
 
+The renders use straycat dev version. No flags are used except for renders with extreme volume changes, in which the P0 flag is set.
+
 **Voicebank**: 櫻花アリス -吾亦紅- / Ouka Alice -Waremokou-
 
 https://user-images.githubusercontent.com/29729824/210136909-53b8671c-13c1-440a-af3e-fd9069888d77.mp4
