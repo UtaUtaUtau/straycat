@@ -41,7 +41,7 @@ optional arguments:
 
 # Example Renders
 
-The renders use straycat dev version. No flags are used except for renders with extreme volume changes, in which the P0 flag is set.
+ The renders use straycat dev version. No flags are used except for renders with extreme volume changes, in which the P0 flag is set.
 
 **Voicebank**: 櫻花アリス -吾亦紅- / Ouka Alice -Waremokou-
 
@@ -94,6 +94,9 @@ https://user-images.githubusercontent.com/29729824/210136998-a0e9fde8-3445-42f4-
 
  **vo(-inf, +inf)** is the offset of the transition from the consonant in milliseconds. Negative values move it earlier. Default is 0.
 
+### g(-inf, +inf)
+ Gender/Formant shift flag. Shifts the formant of the render, more commonly known as adding gender. 10 units in this flag is equivalent to pitching the sample a semitone without formant preservation and pitching it back with formant preservation.
+
 ### B[0, 100]
  Breathiness flag. Values lower than 50 lowers breathiness, but it does not have much effect. Values higher than 50 mixes an unvoiced render in, with 100 as being only the unvoiced render. Default is 50.
 
@@ -114,7 +117,7 @@ https://user-images.githubusercontent.com/29729824/210136998-a0e9fde8-3445-42f4-
 ### G
  Force feature rerendering. This rerenders the cached file straycat reads which is the `.sc.npz` file. It is a regular Numpy compressed array file.
  
- # Remarks
+# Remarks
  This resampler is very slow considering it's written in pure Python. It would actually be pretty fast if it wasn't for Python's packages basically having so much stuff that it makes load times way slower. Python's nature of being an interpreted language might also be a big bottleneck, but Python itself has been considerably fast for me. This is just one of those cases... I could technically speed it up by doing an UTAU specific hack, but it might not work with OpenUtau anymore after this.
  
  I don't want to beat myself down that much for this but the slow speed very much ensures complete compatibility to both OpenUtau and classic UTAU. I guess you could say this would be a resampler in the olden days of single-thread resampling. The new Ameya resamplers are fast because of multiprocessing, and the other WORLD-based resamplers are fast because of their compiled nature. This resampler will always underperform because of Python's interpreted nature. Python was made for scripting after all, as much as so many AI models rely heavily on it.

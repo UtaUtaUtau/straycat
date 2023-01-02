@@ -3,4 +3,5 @@ dist/
 build/
 test/
 *.ico
+*.bat
 straycat.spec
