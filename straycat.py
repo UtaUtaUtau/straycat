@@ -11,7 +11,7 @@ import scipy.interpolate as interp # Interpolator for feats
 import resampy # Resampler (as in sampling rate stuff)
 import re
 
-version = '0.2.0'
+version = '0.2.1'
 help_string = '''usage: straycat in_file out_file pitch velocity [flags] [offset] [length] [consonant] [cutoff] [volume] [modulation] [tempo] [pitch_string]
 
 Resamples using the WORLD Vocoder.
@@ -698,9 +698,9 @@ class Resampler:
             logging.info('Adding tremolo.')
             tremolo = self.flags['A'] / 100
             
-            pitch_sample = pitch_interp(t_sample) # probably bad because of how low the sampling rate is for the pitch
-            pitch_smooth = lowpass(pitch_sample, cutoff=8, order=4)
-            vibrato = highpass(pitch_smooth, cutoff=4, order=4)
+            pitch_sample = pitch_interp(clip(t_sample, 0, t_pitch[-1])) # probably bad because of how low the sampling rate is for the pitch
+            pitch_smooth = lowpass(pitch_sample, cutoff=8, order=16)
+            vibrato = highpass(pitch_smooth, cutoff=4, order=16)
 
             amt = np.maximum(tremolo * vibrato + 1, 0)
             render = render * amt

@@ -1,5 +1,10 @@
 # Changelog
 
+## [dev] - 2023-01-03
+
+## Fixed
+ - Fixed A flag not outputting anything.
+
 ## [0.2.0] - 2023-01-02
 
 ## Added
