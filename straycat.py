@@ -668,6 +668,8 @@ class Resampler:
             amt = smoothstep(-fry - fry_len / 2, -fry + fry_len / 2, t_fry) * smoothstep(fry_len / 2, -fry_len / 2, t_fry) #fry envelope
             env = 1 - amt + fry_vol * amt
 
+            render_hp = highpass(render, cutoff=300) # add a highpass through the fry area
+            render = render * (1 - amt) + render_hp * amt
             render *= env
         
         # Fix voicing flag
