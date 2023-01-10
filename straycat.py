@@ -69,6 +69,15 @@ def clip(x, x_min, x_max):
         return x_max
     return x
 
+@vectorize([float64(float64, float64)], nopython=True)
+def bias(x, a):
+    """Element-wise Schlick bias function."""
+    if a == 0:
+        return 0
+    if a == 1:
+        return 1
+    return x / ((1 / a - 2) * (1 - x) + 1)
+
 def highpass(x, fs=44100, cutoff=3000, order=1):
     """Butterworth highpass with doubled order because of sosfiltfilt."""
     nyq = 0.5 * fs
@@ -617,18 +626,21 @@ class Resampler:
             freq_x = clip(np.linspace(0, gender, fft_size // 2 + 1), 0, 1) # clip axis because Akima1DInterpolator doesn't extrapolate (or even just extend)
             sp_render = sp_render_interp(freq_x).copy(order='C')
 
+        # map unvoicedness (kinda like voisona huskiness)
+        husk = np.mean(ap_render, axis=1)
+        
         # Breathiness flag
         if 'B' in self.flags.keys():
             breath = self.flags['B']
             if breath <= 50: # Raise power to flatten smaller areas and keep max aperiodicity
                 logging.info('Lowering breathiness.')
-                breath = clip(2 * breath / 50, 0, 1)
-                ap_render = np.power(ap_render, 5 * (1 - breath) + 1)
+                breath = breath / 100
+                ap_render = bias(ap_render, breath)
+                ap_render[np.isclose(husk, 1),:] = 1 # make sure unvoiced areas stay unvoiced... only happens if breathiness is 0 but too much if statements
         else:
             breath = 0
             
         # remove pitch in areas with max aperiodicity
-        husk = np.mean(ap_render, axis=1)
         f0_render[np.isclose(husk, 1)] = 0
         render = world.synthesize(f0_render, sp_render, ap_render, default_fs)
         

@@ -1,9 +1,10 @@
 # Changelog
 
-## [dev] - 2023-01-03
+## [dev] - 2023-01-10
 
 ## Changed
  - Added a weak highpass on faked fry areas to improve fake vocal fry quality.
+ - Change lower half of breathiness function to more strongly affect breathiness.
 
 ## Fixed
  - Fixed A flag not outputting anything.
