@@ -41,32 +41,39 @@ optional arguments:
 
 # Example Renders
 
- The renders use straycat 0.2.0. No flags are used except for renders with extreme volume changes, in which the P0 flag is set.
+ The renders use straycat 0.2.1. No flags are used in these renders.
 
-**Voicebank**: 櫻花アリス -吾亦紅- / Ouka Alice -Waremokou-
+**Voicebank**: 櫻花アリス -吾亦紅- / Ouka Alice -Waremokou- / VCV
 
-https://user-images.githubusercontent.com/29729824/210136909-53b8671c-13c1-440a-af3e-fd9069888d77.mp4
+https://user-images.githubusercontent.com/29729824/214388141-07bc30e3-5068-421f-a871-10bc02b7ef02.mp4
 
-**Voicebank**: 紅 通常 VCV / Kurenai Normal VCV
+**Voicebank**: 紅 通常 / Kurenai Normal / VCV
 
-https://user-images.githubusercontent.com/29729824/210136929-263e7ef3-746c-4369-97eb-1db4e0537a81.mp4
+https://user-images.githubusercontent.com/29729824/214388215-fb27cbb4-4242-4423-a928-194a37bcb710.mp4
 
-**Voicebank**: 戯白メリー 太神楽 / Kohaku Merry Daikagura
+**Voicebank**: 戯白メリー 太神楽 / Kohaku Merry Daikagura / VCV
 
-https://user-images.githubusercontent.com/29729824/210136943-09a9a80a-31ca-4b82-9059-0066d3053a5f.mp4
+https://user-images.githubusercontent.com/29729824/214388523-7586efb7-f8e3-406e-bf77-23ba84d179f4.mp4
 
-**Voicebank**: 弄燠音レタ Feuer / Root Leta Feuer
+**Voicebank**: 匿名：MERGE / Tokumei MERGE / VCV
 
-https://user-images.githubusercontent.com/29729824/210136952-ac0e3ad3-6658-400a-a48a-814a43647e6d.mp4
+https://user-images.githubusercontent.com/29729824/214388931-60b11373-8ad9-44b2-b47f-c422fe15281a.mp4
 
-**Voicebank**: 吼音ブシ-武- / Quon Bushi -武-
+**Voicebank**: 吼音ブシ-武- / Quon Bushi -武- / VCV
 
-https://user-images.githubusercontent.com/29729824/210136988-fdeba35a-da8d-4983-8f0c-d6953f86b6cc.mp4
+https://user-images.githubusercontent.com/29729824/214389016-0413db90-fdfb-4929-a4a0-f41f7eebbe3d.mp4
 
-**Voicebank**: 松木マックス SPRUCE(NEO)v2.0 / Matsuki Max SPRUCE (NEO) v2.0
+**Voicebank**: 松木マックス SPRUCE(NEO)v2.0 / Matsuki Max SPRUCE (NEO) v2.0 / VCV
 
-https://user-images.githubusercontent.com/29729824/210136998-a0e9fde8-3445-42f4-9a29-64fc54516c9f.mp4
+https://user-images.githubusercontent.com/29729824/214389127-42546acc-2c77-4096-b6cd-1685e72ef1ee.mp4
 
+**Voicebank**: 紅 地球 2.0 / Kurenai Earth 2.0 / CVVC
+
+https://user-images.githubusercontent.com/29729824/214389485-14c6677d-8329-4c77-bc9a-90fb26f19de0.mp4
+
+**Voicebank**: 学人デシマル χ / Gakuto Deshimaru Chi / CVVC
+
+https://user-images.githubusercontent.com/29729824/214389797-9a2cdbf9-960d-4f1a-8efd-8266dcd1cacc.mp4
 
 # straycat flags
 
