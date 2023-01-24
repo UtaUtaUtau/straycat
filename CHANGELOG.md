@@ -1,6 +1,6 @@
 # Changelog
 
-## [dev] - 2023-01-24
+## [0.2.1] - 2023-01-24
 
 ## Changed
  - Added a weak highpass on faked fry areas to improve fake vocal fry quality.

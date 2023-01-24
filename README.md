@@ -41,7 +41,7 @@ optional arguments:
 
 # Example Renders
 
- The renders use straycat dev version. No flags are used except for renders with extreme volume changes, in which the P0 flag is set.
+ The renders use straycat 0.2.0. No flags are used except for renders with extreme volume changes, in which the P0 flag is set.
 
 **Voicebank**: 櫻花アリス -吾亦紅- / Ouka Alice -Waremokou-
 
