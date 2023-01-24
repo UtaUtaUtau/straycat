@@ -1,10 +1,11 @@
 # Changelog
 
-## [dev] - 2023-01-10
+## [dev] - 2023-01-24
 
 ## Changed
  - Added a weak highpass on faked fry areas to improve fake vocal fry quality.
  - Change lower half of breathiness function to more strongly affect breathiness.
+ - Swap out audio file handler from `scipy.io.wavfile` to `soundfile` for easier handling.
 
 ## Fixed
  - Fixed A flag not outputting anything.

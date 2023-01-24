@@ -5,7 +5,7 @@ import os
 import pyworld as world # Vocoder
 import numpy as np # Numpy <3
 from numba import njit, vectorize, float64, optional # JIT compilation stuff (and ufuncs)
-import scipy.io.wavfile as wav # WAV read + write
+import soundfile as sf # WAV read + write
 import scipy.signal as signal # for filtering
 import scipy.interpolate as interp # Interpolator for feats
 import resampy # Resampler (as in sampling rate stuff)
@@ -205,7 +205,7 @@ def midi_to_hz(x):
 
 # WAV read/write
 def read_wav(loc):
-    """Read WAV file that remaps unsigned integer WAV files to [-1, 1] range, resamples to 44.1kHz if needed, and mixes down to mono if needed. May fail on unsigned integer types.
+    """Read audio files supported by soundfile and resample to 44.1kHz if needed. Mixes down to mono if needed.
 
     Parameters
     ----------
@@ -217,18 +217,9 @@ def read_wav(loc):
     ndarray
         Data read from WAV file remapped to [-1, 1] and in 44.1kHz
     """
-    fs, x = wav.read(loc)
-    # Check integer typing
-    xtype = x.dtype
-    int_type = np.issubdtype(xtype, np.integer)
-
-    if int_type:
-        # Divide by max integer
-        info = np.iinfo(xtype)
-        x = x / info.max
-
+    x, fs = sf.read(loc)
     if len(x.shape) == 2:
-        # Average all channels... Probably not too good for formats bigger than 2.0
+        # Average all channels... Probably not too good for formats bigger than stereo
         x = np.mean(x, axis=1)
 
     if fs != default_fs:
@@ -237,7 +228,7 @@ def read_wav(loc):
     return x
 
 def save_wav(loc, x):
-    """Save data into a WAV file. Assumes data is in 44.1kHz and in [-1, 1] range.
+    """Save data into a WAV file.
 
     Parameters
     ----------
@@ -251,9 +242,7 @@ def save_wav(loc, x):
     -------
     None
     """
-    info = np.iinfo(np.int16)
-    x = clip(x * info.max, info.min, info.max).astype(np.int16)
-    wav.write(loc, default_fs, x)
+    sf.write(loc, x, default_fs, 'PCM_16')
 
 # Processing WORLD things
 @njit(float64(float64[:], optional(float64), optional(float64)))
