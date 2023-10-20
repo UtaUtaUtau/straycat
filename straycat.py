@@ -633,7 +633,7 @@ class Resampler:
         #Peak compressor flag
         peak = 1 - self.flags.get('P', 86) / 100
 
-        rms = np.sqrt(2 * np.sum(sp_render, axis=1) / fft_size ** 2) # get RMS.. i'm not sure if this is right but i think it's fine
+        rms = np.sqrt(2 * np.sum(sp_render, axis=1) / fft_size ** 2 + 0.000001) # get RMS.. i'm not sure if this is right but i think it's fine
         rms_peak = np.max(rms)
         rms_norm = rms / (peak * rms_peak)
 
