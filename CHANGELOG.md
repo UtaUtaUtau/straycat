@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.2.2] - 2023-10-20
+## [0.3.0] - 2023-10-20
 
 ## Changed
  - Change how whisper renders are calculated.
