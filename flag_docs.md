@@ -2,6 +2,9 @@
 
  This is the main documentation of the flags available in straycat.
 
+# Value Notation for valued flags
+ The notation for the ranges of each flag follows interval notation from mathematics. Square brackets **[]** mean that the value is included within the range, while parentheses **()** mean that the value is not included within the range. **inf** means infinity.
+
 ## Valued flags
 
 ### fe, fo, fl, fv, fp
@@ -30,8 +33,11 @@
 ### B[0, 100]
  Breathiness flag. Values lower than 50 lowers breathiness, but it does not have much effect. Values higher than 50 mixes an unvoiced render in, with 100 as being only the unvoiced render. Default is 50.
 
-### P[0, 100]
- Peak normalization flag. This flag normalizes the sample to have the same peak volume for each note. At 0, this flag does not touch the volume of the render at all. Default is 100.
+### P[0, 100)
+ Peak compressor flag. This flag compresses the render to have a more consistent volume throughout the render. At 0, this flag does not compress the render at all. Default is 86.
+
+### p[0, +inf)
+ Peak normalization flag. This flag normalizes the sample to make the peak of the sample -p dB, where p is the value set for the flag. Negative values skip this normalization step. Default is 6.
  
 ### A(-inf, +inf)
  Tremolo flag. This flag tries to isolate the vibrato from the pitchbend and modulates the volume based on this isolated vibrato, which means it may also react on drawn vibrato and more. Default is 0. This flag is applied after the peak normalization flag, so it may cause clipping issues.

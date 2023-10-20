@@ -7,7 +7,7 @@
  - Changed P flag to a rookie attempt at peak compression. I'm not even sure if this works out but it kinda does.
 
 ## Added
- - Added the p flag for peak normalization, as well as the algorithm.
+ - Added the p flag for peak normalization. The algorithm from the previous peak normalization flag is different.
 
 ## [0.2.1] - 2023-01-24
 

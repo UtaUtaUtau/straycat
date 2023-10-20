@@ -8,6 +8,7 @@ from numba import njit, vectorize, float64, optional # JIT compilation stuff (an
 import soundfile as sf # WAV read + write
 import scipy.signal as signal # for filtering
 import scipy.interpolate as interp # Interpolator for feats
+import scipy.ndimage as ndimage
 import resampy # Resampler (as in sampling rate stuff)
 import re
 
@@ -630,7 +631,7 @@ class Resampler:
             breath = 0
             
         #Peak compressor flag
-        peak = self.flags.get('P', 86) / 100
+        peak = 1 - self.flags.get('P', 86) / 100
 
         rms = np.sqrt(2 * np.sum(sp_render, axis=1) / fft_size ** 2) # get RMS.. i'm not sure if this is right but i think it's fine
         rms_peak = np.max(rms)
@@ -640,12 +641,10 @@ class Resampler:
         comp[rms_norm >= 1] = rms_norm[rms_norm >= 1] - 1
         comp = (1 - peak) * comp / np.max(comp)
         comp = 1 - comp
-        env = np.exp(np.linspace(0, -5, 10))
-        env /= np.sum(env)
 
-        comp = 1 - signal.convolve(1 - comp, env, mode='same')        
+        comp = ndimage.gaussian_filter1d(comp, 6) 
 
-        comp = np.vstack([np.square(comp)] * sp_render.shape[1]).transpose()
+        comp = np.vstack([comp] * sp_render.shape[1]).transpose()
         sp_render *= comp
         ap_render *= comp
 
@@ -705,10 +704,11 @@ class Resampler:
             amt = smoothstep(-end_breath / 2, end_breath / 2, t_sample - t[con] - offset) # smoothstep with consonant at 0.5
             render = render * (1 - amt) + render_breath * amt # mix sample based on envelope
             
-        normalize = max(self.flags.get('p', 6), 0)
+        normalize = self.flags.get('p', 6)
 
-        normal = render / np.max(render)
-        render = normal * (10 ** (-normalize / 20))
+        if normalize >= 0:
+            normal = render / np.max(render)
+            render = normal * (10 ** (-normalize / 20))
 
         ### AFTER PEAK NORMALIZATION ###
         # Tremolo flag
