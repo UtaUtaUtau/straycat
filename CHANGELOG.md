@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.2.2] - 2023-10-20
+
+## Changed
+ - Change how whisper renders are calculated.
+ - Changed P flag to a rookie attempt at peak compression. I'm not even sure if this works out but it kinda does.
+
+## Added
+ - Added the p flag for peak normalization, as well as the algorithm.
+
 ## [0.2.1] - 2023-01-24
 
 ## Changed

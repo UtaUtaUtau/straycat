@@ -11,7 +11,7 @@ import scipy.interpolate as interp # Interpolator for feats
 import resampy # Resampler (as in sampling rate stuff)
 import re
 
-version = '0.2.1'
+version = '0.2.2'
 help_string = '''usage: straycat in_file out_file pitch velocity [flags] [offset] [length] [consonant] [cutoff] [volume] [modulation] [tempo] [pitch_string]
 
 Resamples using the WORLD Vocoder.
@@ -44,7 +44,7 @@ f0_floor = world.default_f0_floor
 f0_ceil = 1760
 
 # Flags
-flags = ['fe', 'fl', 'fo', 'fv', 'fp', 've', 'vo', 'g', 't', 'A', 'B', 'G', 'P', 'S']
+flags = ['fe', 'fl', 'fo', 'fv', 'fp', 've', 'vo', 'g', 't', 'A', 'B', 'G', 'P', 'S', 'p']
 flag_re = '|'.join(flags)
 flag_re = f'({flag_re})([+-]?\\d+)?'
 flag_re = re.compile(flag_re)
@@ -629,6 +629,26 @@ class Resampler:
         else:
             breath = 0
             
+        #Peak compressor flag
+        peak = self.flags.get('P', 86) / 100
+
+        rms = np.sqrt(2 * np.sum(sp_render, axis=1) / fft_size ** 2) # get RMS.. i'm not sure if this is right but i think it's fine
+        rms_peak = np.max(rms)
+        rms_norm = rms / (peak * rms_peak)
+
+        comp = np.zeros(rms_norm.shape)
+        comp[rms_norm >= 1] = rms_norm[rms_norm >= 1] - 1
+        comp = (1 - peak) * comp / np.max(comp)
+        comp = 1 - comp
+        env = np.exp(np.linspace(0, -5, 10))
+        env /= np.sum(env)
+
+        comp = 1 - signal.convolve(1 - comp, env, mode='same')        
+
+        comp = np.vstack([np.square(comp)] * sp_render.shape[1]).transpose()
+        sp_render *= comp
+        ap_render *= comp
+
         # remove pitch in areas with max aperiodicity
         f0_render[np.isclose(husk, 1)] = 0
         render = world.synthesize(f0_render, sp_render, ap_render, default_fs)
@@ -643,9 +663,7 @@ class Resampler:
         if breath > 50: # mix max breathiness signal
             logging.info('Raising breathiness.')
             breath = clip((breath - 50) / 50, 0, 1)
-            render_breath = world.synthesize(f0_render, sp_render, np.ones(ap_render.shape), default_fs) # render with all max aperiodicity
-            render_breath = highpass(render_breath)
-            
+            render_breath = world.synthesize(f0_render, sp_render * np.square(ap_render), np.ones(ap_render.shape), default_fs) # apply band AP on regular specgram, max out ap            
             
             render = render * (1 - breath) + render_breath * breath # Mix signals
             
@@ -677,8 +695,7 @@ class Resampler:
         if 've' in self.flags.keys():
             logging.info('Fixing voicing.')
             end_breath = self.flags['ve'] / 1000
-            render_breath = world.synthesize(f0_render, sp_render, np.ones(ap_render.shape), default_fs) # render with all max aperiodicity
-            render_breath = highpass(render_breath)
+            render_breath = world.synthesize(f0_render, sp_render * np.square(ap_render), np.ones(ap_render.shape), default_fs) # apply band AP on regular specgram, max out ap  
 
             offset = 0
             if 'vo' in self.flags.keys(): # check offset flag
@@ -688,12 +705,10 @@ class Resampler:
             amt = smoothstep(-end_breath / 2, end_breath / 2, t_sample - t[con] - offset) # smoothstep with consonant at 0.5
             render = render * (1 - amt) + render_breath * amt # mix sample based on envelope
             
-        peak = 0.86 # Peak "compression" but it's actually just normalization LOL
-        if 'P' in self.flags.keys():
-            peak = clip(self.flags['P'] / 100, 0, 1)
+        normalize = max(self.flags.get('p', 6), 0)
 
-        normal = 0.6 * render / np.max(np.abs(render))
-        render = render * (1 - peak) + normal * peak
+        normal = render / np.max(render)
+        render = normal * (10 ** (-normalize / 20))
 
         ### AFTER PEAK NORMALIZATION ###
         # Tremolo flag
