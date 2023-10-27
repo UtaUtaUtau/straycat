@@ -11,7 +11,12 @@ pip install numpy scipy resampy pyworld
 ```
  
 ## Running in UTAU
- Download the `straycat.py` file and put it somewhere. Open your `.ust` file as a text file with whichever text editor. Change the `Tool2` resampler to the path of `straycat.py`. You can now open the `.ust` and use `straycat.py` as a resampler. You may need to press cancel for the project properties when UTAU shows the project properties panel.
+ 1. Download the `straycat.py` file and put it somewhere.
+ 2. Setup your `.ust` file to have the proper voicebank and wavtool selected.
+ 3. Open your `.ust` file as a text file with whichever text editor.
+ 4. Change the `Tool2` resampler to the path of `straycat.py`.
+
+ You can now open the `.ust` and use `straycat.py` as a resampler. You need to press cancel in the project properties when UTAU shows the project properties panel.
  
 ## Running throught terminal
  Most resamplers can take arguments to render a sample. This resampler only reads the terminal arguments.
@@ -38,6 +43,21 @@ optional arguments:
 	tempo		The tempo of the render. Needs to have a ! at the start. (default: !100)
 	pitch_string	The UTAU pitchbend parameter written in Base64 with RLE encoding. (default: AA)
 ```
+
+# How to use (release version)
+## Classic UTAU
+ 1. Download `straycat.7z` for the version you want to use.
+ 2. Extract the 7z archive anywhere.
+ 3. Set your resampler to `straycat.exe` in Project Properties.
+
+ You can now use straycat in classic UTAU.
+
+## OpenUtau
+ 1. Download `straycat.7z` for the version you want to use.
+ 2. Extract the 7z archive in the `Resamplers` folder of OpenUtau.
+ 3. Select the resampler in whichever way you prefer.
+
+ You can now use straycat in OpenUtau.
 
 # Example Renders
 
