@@ -77,7 +77,7 @@ https://user-images.githubusercontent.com/29729824/214389797-9a2cdbf9-960d-4f1a-
 
 # straycat flags
 
-See (Flags Documentation)[flag_docs.md]
+See [Flags Documentation](flag_docs.md)
 
 # Remarks
  This resampler is very slow considering it's written in pure Python. It would actually be pretty fast if it wasn't for Python's packages basically having so much stuff that it makes load times way slower. Python's nature of being an interpreted language might also be a big bottleneck, but Python itself has been considerably fast for me. This is just one of those cases... I could technically speed it up by doing an UTAU specific hack, but it might not work with OpenUtau anymore after this.
