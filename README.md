@@ -59,6 +59,10 @@ optional arguments:
 
  You can now use straycat in OpenUtau.
 
+# Addendum
+
+Astel has made a server version that works with both UTAU and OpenUtau. It may render faster than regular straycat. You can get it (over here.)[https://github.com/Astel123457/straycat]
+
 # Example Renders
 
  The renders use straycat 0.2.1. No flags are used in these renders.
