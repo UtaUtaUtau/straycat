@@ -6,7 +6,6 @@ image: Visual Studio 2022
 build: 
   verbosity: minimal
 
-
 build_script:
   - cmd: dotnet restore
   - cmd: dotnet build StrayCatRunner/StrayCatRunner.csproj --configuration Release
