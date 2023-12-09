@@ -21,7 +21,7 @@ deploy:
   - provider: GitHub
     tag: $(APPVEYOR_REPO_TAG_NAME)
     release: Release $(APPVEYOR_REPO_TAG_NAME)
-    description: 'This is a test release, windows only for right now'
+    description: 'This is a test release, windows only for right now.'
     auth_token:
       secure: C0IqVjv+wrTqiWI4cNlCXKndiCX+No8WMcWcsUlUW3ycgeZrjsyAocYEzLI1UTNA
     artifact: Executable 
