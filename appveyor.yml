@@ -11,20 +11,36 @@ environment:
   my_variable:
     secure: C0IqVjv+wrTqiWI4cNlCXKndiCX+No8WMcWcsUlUW3ycgeZrjsyAocYEzLI1UTNA
 
+# this is ugly but it works mabye
+
 build_script:
   - if "%IMAGE%"=="Visual Studio 2022" (
       dotnet restore StrayCatRunner/StrayCatRunner.csproj
+    )
+  - if "%IMAGE%"=="Visual Studio 2022" (
       dotnet build StrayCatRunner/StrayCatRunner.csproj --configuration Release
+    )
+  - if "%IMAGE%"=="Visual Studio 2022" (
       dotnet publish StrayCatRunner/StrayCatRunner.csproj --configuration Release --runtime %RUNTIME% /p:PublishSingleFile=true /p:PublishTrimmed=true /p:SelfContained=true --output ./publish
     )
+
   - if "%IMAGE%"=="macOS" (
       dotnet restore StrayCatRunner/StrayCatRunner.csproj
+    )
+  - if "%IMAGE%"=="macOS" (
       dotnet build StrayCatRunner/StrayCatRunner.csproj --configuration Release
+    )
+  - if "%IMAGE%"=="macOS" (
       dotnet publish StrayCatRunner/StrayCatRunner.csproj --configuration Release --runtime %RUNTIME% /p:PublishSingleFile=true /p:PublishTrimmed=true /p:SelfContained=true --output ./publish
     )
+
   - if "%IMAGE%"=="Ubuntu" (
       dotnet restore StrayCatRunner/StrayCatRunner.csproj
+    )
+  - if "%IMAGE%"=="Ubuntu" (
       dotnet build StrayCatRunner/StrayCatRunner.csproj --configuration Release
+    )
+  - if "%IMAGE%"=="Ubuntu" (
       dotnet publish StrayCatRunner/StrayCatRunner.csproj --configuration Release --runtime %RUNTIME% /p:PublishSingleFile=true /p:PublishTrimmed=true /p:SelfContained=true --output ./publish
     )
 
