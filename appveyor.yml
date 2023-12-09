@@ -9,7 +9,7 @@ image:
   - Ubuntu
 
 matrix:
-  only:
+  include:
     - image: Visual Studio 2022
       build_script:
         - cmd: dotnet restore StrayCatRunner/StrayCatRunner.csproj
