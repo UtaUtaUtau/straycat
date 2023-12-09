@@ -9,7 +9,7 @@ build:
 
 build_script:
   - cmd: dotnet restore
-  -cmd: dotnet build --configuration Release
+  - cmd: dotnet build --configuration Release
 
 after_build:
   - cmd: dotnet publish --configuration Release --runtime win-x64 /p:PublishSingleFile=true /p:PublishTrimmed=true /p:SelfContained=true --output ./publish
