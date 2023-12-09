@@ -11,7 +11,7 @@ build_script:
   - cmd: dotnet build StrayCatRunner/StrayCatRunner.csproj --configuration Release
 
 after_build:
-  - cmd: dotnet publish --configuration Release --runtime win-x64 /p:PublishSingleFile=true /p:PublishTrimmed=true /p:SelfContained=true --output ./publish
+  - cmd: dotnet publish StrayCatRunner/StrayCatRunner.csproj --configuration Release --runtime win-x64 /p:PublishSingleFile=true /p:PublishTrimmed=true /p:SelfContained=true --output ./publish
 
 artifacts:
   - path: './publish/*'
