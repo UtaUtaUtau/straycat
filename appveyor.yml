@@ -1,4 +1,4 @@
-version: 1.2.3
+version: 1.2.4
 environment:
   matrix:
     - IMAGE: 'Visual Studio 2022'
@@ -24,10 +24,10 @@ build_script:
       dotnet publish StrayCatRunner/StrayCatRunner.csproj --configuration Release --runtime %RUNTIME% /p:PublishSingleFile=true /p:PublishTrimmed=true /p:SelfContained=true --output ./publish
     )
   - if "%IMAGE%"=="Visual Studio 2022" (
-      Copy-Item -Path .\straycat_server.py -Destination ./publish
+     xcopy /I /Y .\straycat_server.py .\publish
     )
   - if "%IMAGE%"=="Visual Studio 2022" (
-      Compress-Archive -Path ./publish/* -DestinationPath ./publish/StrayCatRunner_Windows.zip
+      7z a -r -tzip ./publish/* ./publish/StrayCatRunner_Windows.zip
     )
 
   - if "%IMAGE%"=="macOS" (
@@ -40,10 +40,10 @@ build_script:
       dotnet publish StrayCatRunner/StrayCatRunner.csproj --configuration Release --runtime %RUNTIME% /p:PublishSingleFile=true /p:PublishTrimmed=true /p:SelfContained=true --output ./publish/mac
     )
   - if "%IMAGE%"=="macOS" (
-      Copy-Item -Path .\straycat_server.py -Destination ./publish/mac
+      xcopy /I /Y .\straycat_server.py ./publish/mac
     )
   - if "%IMAGE%"=="macOS" (
-      Compress-Archive -Path ./publish/mac/* -DestinationPath ./publish/StrayCatRunner_Mac.zip
+      7z a -r -tzip ./publish/mac/* ./publish/StrayCatRunner_Mac.zip
     )
 
   - if "%IMAGE%"=="Ubuntu" (
@@ -56,10 +56,10 @@ build_script:
       dotnet publish StrayCatRunner/StrayCatRunner.csproj --configuration Release --runtime %RUNTIME% /p:PublishSingleFile=true /p:PublishTrimmed=true /p:SelfContained=true --output ./publish/linux
     )
   - if "%IMAGE%"=="Ubuntu" (
-      Copy-Item -Path .\straycat_server.py -Destination ./publish/linux
+     xcopy /I /Y .\straycat_server.py ./publish/linux
     )
   - if "%IMAGE%"=="Ubuntu" (
-      Compress-Archive -Path ./publish/linux/* -DestinationPath ./publish/StrayCatRunner_Linux.zip
+      7z a -r -tzip ./publish/linux/* ./publish/StrayCatRunner_Linux.zip
     )
 
 artifacts:
