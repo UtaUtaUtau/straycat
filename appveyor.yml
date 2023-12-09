@@ -27,7 +27,7 @@ build_script:
      xcopy /I /Y .\straycat_server.py .\publish\
     )
   - if "%IMAGE%"=="Visual Studio 2022" (
-      7z a -r -tzip ./publish/* ./publish/StrayCatRunner_Windows.zip
+      7z a -r -tzip ./publish/StrayCatRunner_Windows.zip ./publish/* 
     )
 
   - if "%IMAGE%"=="macOS" (
@@ -37,13 +37,13 @@ build_script:
       dotnet build StrayCatRunner/StrayCatRunner.csproj --configuration Release
     )
   - if "%IMAGE%"=="macOS" (
-      dotnet publish StrayCatRunner/StrayCatRunner.csproj --configuration Release --runtime %RUNTIME% /p:PublishSingleFile=true /p:PublishTrimmed=true /p:SelfContained=true --output ./publish/mac/
+      dotnet publish StrayCatRunner/StrayCatRunner.csproj --configuration Release --runtime %RUNTIME% /p:PublishSingleFile=true /p:PublishTrimmed=true /p:SelfContained=true --output ./publish_mac/
     )
   - if "%IMAGE%"=="macOS" (
-      xcopy /I /Y .\straycat_server.py ./publish/mac/
+      xcopy /I /Y .\straycat_server.py ./publish_mac/
     )
   - if "%IMAGE%"=="macOS" (
-      7z a -r -tzip ./publish/mac/* ./publish/StrayCatRunner_Mac.zip
+      7z a -r -tzip ./publish/StrayCatRunner_Mac.zip ./publish_mac/* 
     )
 
   - if "%IMAGE%"=="Ubuntu" (
@@ -53,13 +53,13 @@ build_script:
       dotnet build StrayCatRunner/StrayCatRunner.csproj --configuration Release
     )
   - if "%IMAGE%"=="Ubuntu" (
-      dotnet publish StrayCatRunner/StrayCatRunner.csproj --configuration Release --runtime %RUNTIME% /p:PublishSingleFile=true /p:PublishTrimmed=true /p:SelfContained=true --output ./publish/linux/
+      dotnet publish StrayCatRunner/StrayCatRunner.csproj --configuration Release --runtime %RUNTIME% /p:PublishSingleFile=true /p:PublishTrimmed=true /p:SelfContained=true --output ./publish_linux/
     )
   - if "%IMAGE%"=="Ubuntu" (
-     xcopy /I /Y .\straycat_server.py ./publish/linux/
+     xcopy /I /Y .\straycat_server.py ./publish_linux/
     )
   - if "%IMAGE%"=="Ubuntu" (
-      7z a -r -tzip ./publish/linux/* ./publish/StrayCatRunner_Linux.zip
+      7z a -r -tzip ./publish/StrayCatRunner_Linux.zip ./publish_linux/* 
     )
 
 artifacts:
