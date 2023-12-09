@@ -31,7 +31,7 @@ build_script:
       dotnet build StrayCatRunner/StrayCatRunner.csproj --configuration Release
     )
   - if "%IMAGE%"=="macOS" (
-      dotnet publish StrayCatRunner/StrayCatRunner.csproj --configuration Release --runtime %RUNTIME% /p:PublishSingleFile=true /p:PublishTrimmed=true /p:SelfContained=true --output ./publish
+      dotnet publish StrayCatRunner/StrayCatRunner.csproj --configuration Release --runtime %RUNTIME% /p:PublishSingleFile=true /p:PublishTrimmed=true /p:SelfContained=true --output ./publish/mac
     )
 
   - if "%IMAGE%"=="Ubuntu" (
@@ -41,12 +41,18 @@ build_script:
       dotnet build StrayCatRunner/StrayCatRunner.csproj --configuration Release
     )
   - if "%IMAGE%"=="Ubuntu" (
-      dotnet publish StrayCatRunner/StrayCatRunner.csproj --configuration Release --runtime %RUNTIME% /p:PublishSingleFile=true /p:PublishTrimmed=true /p:SelfContained=true --output ./publish
+      dotnet publish StrayCatRunner/StrayCatRunner.csproj --configuration Release --runtime %RUNTIME% /p:PublishSingleFile=true /p:PublishTrimmed=true /p:SelfContained=true --output ./publish/linux
     )
 
 artifacts:
-  - path: './publish/*'
-    name: Executable
+  - path: './publish/*.zip'
+    name: Archives
+
+  - path: 'straycat_server.py'
+    name: AdditionalFile
+
+  - path: 'create_archives.ps1'
+    name: Script
 
 deploy:
   - provider: GitHub
