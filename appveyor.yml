@@ -7,7 +7,7 @@ build:
   verbosity: minimal
 
 build_script:
-  - cmd: dotnet restore
+  - cmd: dotnet restore StrayCatRunner/StrayCatRunner.csproj
   - cmd: dotnet build StrayCatRunner/StrayCatRunner.csproj --configuration Release
 
 after_build:
