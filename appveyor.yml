@@ -1,4 +1,4 @@
-version: 1.2.5
+version: 1.2.6
 environment:
   matrix:
     - IMAGE: 'Visual Studio 2022'
@@ -29,7 +29,6 @@ build_script:
   - if "%IMAGE%"=="Visual Studio 2022" (
       7z a -r -tzip ./publish/StrayCatRunner_Windows.zip ./publish/* 
     )
-
   - if "%IMAGE%"=="macOS" (
       dotnet restore StrayCatRunner/StrayCatRunner.csproj
     )
@@ -45,7 +44,6 @@ build_script:
   - if "%IMAGE%"=="macOS" (
       7z a -r -tzip ./publish/StrayCatRunner_Mac.zip ./publish_mac/* 
     )
-
   - if "%IMAGE%"=="Ubuntu" (
       dotnet restore StrayCatRunner/StrayCatRunner.csproj
     )
