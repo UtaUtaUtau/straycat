@@ -1,31 +1,32 @@
 version: 1.2.0
 environment:
+  matrix:
+    - IMAGE: 'Visual Studio 2022'
+      RUNTIME: 'win-x64'
+    - IMAGE: 'macOS'
+      RUNTIME: 'osx-x64'
+    - IMAGE: 'Ubuntu'
+      RUNTIME: 'linux-x64'
+
   my_variable:
     secure: C0IqVjv+wrTqiWI4cNlCXKndiCX+No8WMcWcsUlUW3ycgeZrjsyAocYEzLI1UTNA
 
-image:
-  - Visual Studio 2022
-  - macOS
-  - Ubuntu
-
-jobs:
-  - image: Visual Studio 2022
-    build_script:
-      - cmd: dotnet restore StrayCatRunner/StrayCatRunner.csproj
-      - cmd: dotnet build StrayCatRunner/StrayCatRunner.csproj --configuration Release
-      - cmd: dotnet publish StrayCatRunner/StrayCatRunner.csproj --configuration Release --runtime win-x64 /p:PublishSingleFile=true /p:PublishTrimmed=true /p:SelfContained=true --output ./publish
-
-  - image: macOS
-    build_script:
-      - dotnet restore StrayCatRunner/StrayCatRunner.csproj
-      - dotnet build StrayCatRunner/StrayCatRunner.csproj --configuration Release
-      - dotnet publish StrayCatRunner/StrayCatRunner.csproj --configuration Release --runtime osx-x64 /p:PublishSingleFile=true /p:PublishTrimmed=true /p:SelfContained=true --output ./publish
-
-  - image: Ubuntu
-    build_script:
-      - dotnet restore StrayCatRunner/StrayCatRunner.csproj
-      - dotnet build StrayCatRunner/StrayCatRunner.csproj --configuration Release
-      - dotnet publish StrayCatRunner/StrayCatRunner.csproj --configuration Release --runtime linux-x64 /p:PublishSingleFile=true /p:PublishTrimmed=true /p:SelfContained=true --output ./publish
+build_script:
+  - if "%IMAGE%"=="Visual Studio 2022" (
+      dotnet restore StrayCatRunner/StrayCatRunner.csproj
+      dotnet build StrayCatRunner/StrayCatRunner.csproj --configuration Release
+      dotnet publish StrayCatRunner/StrayCatRunner.csproj --configuration Release --runtime %RUNTIME% /p:PublishSingleFile=true /p:PublishTrimmed=true /p:SelfContained=true --output ./publish
+    )
+  - if "%IMAGE%"=="macOS" (
+      dotnet restore StrayCatRunner/StrayCatRunner.csproj
+      dotnet build StrayCatRunner/StrayCatRunner.csproj --configuration Release
+      dotnet publish StrayCatRunner/StrayCatRunner.csproj --configuration Release --runtime %RUNTIME% /p:PublishSingleFile=true /p:PublishTrimmed=true /p:SelfContained=true --output ./publish
+    )
+  - if "%IMAGE%"=="Ubuntu" (
+      dotnet restore StrayCatRunner/StrayCatRunner.csproj
+      dotnet build StrayCatRunner/StrayCatRunner.csproj --configuration Release
+      dotnet publish StrayCatRunner/StrayCatRunner.csproj --configuration Release --runtime %RUNTIME% /p:PublishSingleFile=true /p:PublishTrimmed=true /p:SelfContained=true --output ./publish
+    )
 
 artifacts:
   - path: './publish/*'
