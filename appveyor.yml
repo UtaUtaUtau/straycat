@@ -1,0 +1,32 @@
+version: 1.1.0
+environment:
+  my_variable:
+    secure: C0IqVjv+wrTqiWI4cNlCXKndiCX+No8WMcWcsUlUW3ycgeZrjsyAocYEzLI1UTNA
+image: Visual Studio 2022
+build: 
+  verbosity: minimal
+
+
+build_script:
+  - cmd: dotnet restore
+  -cmd: dotnet build --configuration Release
+
+after_build:
+  - cmd: dotnet publish --configuration Release --runtime win-x64 /p:PublishSingleFile=true /p:PublishTrimmed=true /p:SelfContained=true --output ./publish
+
+artifacts:
+  - path: './publish/*'
+    name: Executable
+
+deploy:
+  - provider: GitHub
+    tag: $(APPVEYOR_REPO_TAG_NAME)
+    release: Release $(APPVEYOR_REPO_TAG_NAME)
+    description: 'This is a test release, windows only for right now'
+    auth_token:
+      secure: C0IqVjv+wrTqiWI4cNlCXKndiCX+No8WMcWcsUlUW3ycgeZrjsyAocYEzLI1UTNA
+    artifact: Executable 
+    draft: false
+    prerelease: false
+    on:
+      appveyor_repo_tag: false
