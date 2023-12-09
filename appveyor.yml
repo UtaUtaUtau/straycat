@@ -1,4 +1,4 @@
-version: 1.2.4
+version: 1.2.5
 environment:
   matrix:
     - IMAGE: 'Visual Studio 2022'
@@ -65,7 +65,6 @@ build_script:
 artifacts:
   - path: './publish/*.zip'
     name: Archives
-
 
 deploy:
   - provider: GitHub
