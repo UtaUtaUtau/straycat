@@ -18,6 +18,7 @@ class Program
         try
         {
             var postFields = string.Join(" ", args);
+            System.Console.WriteLine($"Sending: {postFields}");
             var content = new StringContent(postFields, Encoding.UTF8, "application/x-www-form-urlencoded");
 
             HttpResponseMessage response = await client.PostAsync("http://127.0.0.1:8572", content); // Replace with your URL
@@ -33,7 +34,7 @@ class Program
         }
         catch (HttpRequestException e)
         {
-            Console.Error.WriteLine($"Request exception: {e.Message}");
+            Console.Error.WriteLine($"Request exception: {e.Message}\nIs straycat_server running?");
         }
     }
 }
