@@ -12,7 +12,7 @@ import scipy.ndimage as ndimage
 import resampy # Resampler (as in sampling rate stuff)
 import re
 
-version = '0.3.0'
+version = '0.3.1'
 help_string = '''usage: straycat in_file out_file pitch velocity [flags] [offset] [length] [consonant] [cutoff] [volume] [modulation] [tempo] [pitch_string]
 
 Resamples using the WORLD Vocoder.
@@ -631,22 +631,24 @@ class Resampler:
             breath = 0
             
         #Peak compressor flag
-        peak = 1 - self.flags.get('P', 86) / 100
+        flag_peak = self.flags.get('P', 86)
+        peak = 1 - flag_peak / 100
 
-        rms = np.sqrt(2 * np.sum(sp_render, axis=1) / fft_size ** 2 + 0.000001) # get RMS.. i'm not sure if this is right but i think it's fine
-        rms_peak = np.max(rms)
-        rms_norm = rms / (peak * rms_peak)
+        if flag_peak > 0:
+            rms = np.sqrt(2 * np.sum(sp_render, axis=1) / fft_size ** 2 + 0.000001) # get RMS.. i'm not sure if this is right but i think it's fine
+            rms_peak = np.max(rms)
+            rms_norm = rms / (peak * rms_peak)
 
-        comp = np.zeros(rms_norm.shape)
-        comp[rms_norm >= 1] = rms_norm[rms_norm >= 1] - 1
-        comp = (1 - peak) * comp / np.max(comp)
-        comp = 1 - comp
+            comp = np.zeros(rms_norm.shape)
+            comp[rms_norm >= 1] = rms_norm[rms_norm >= 1] - 1
+            comp = (1 - peak) * comp / np.max(comp)
+            comp = 1 - comp
 
-        comp = ndimage.gaussian_filter1d(comp, 6) 
+            comp = ndimage.gaussian_filter1d(comp, 6) 
 
-        comp = np.vstack([comp] * sp_render.shape[1]).transpose()
-        sp_render *= comp
-        ap_render *= comp
+            comp = np.vstack([comp] * sp_render.shape[1]).transpose()
+            sp_render *= comp
+            ap_render *= comp
 
         # remove pitch in areas with max aperiodicity
         f0_render[np.isclose(husk, 1)] = 0
