@@ -10,20 +10,6 @@
 pip install numpy scipy resampy pyworld
 ```
 
-# How to use (server version)
- You need to have Python installed. This was made using Python 3.8.10.
- Same as normal straycat, but run the `straycat_server.py` script afterwards.
- 
- You must install the needed libraries first, which are numpy, scipy, resampy, and pyworld. To do that, you may run a regular pip installation:
- 
-```cls
-pip install numpy scipy resampy pyworld
-```
-Then
-```cls
-python straycat_server.py
-```
- 
 ## Running in UTAU
  1. Download the `straycat.py` file and put it somewhere.
  2. Setup your `.ust` file to have the proper voicebank and wavtool selected.
