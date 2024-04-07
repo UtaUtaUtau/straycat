@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.1] - 2024-03-24
+
+## Added
+ - Support reading all filetypes that `soundfile` can read. Kind of.
+
+## Fixed
+ - Fixed P flag bug at P0 where it goes haywire in general.
+
 ## [0.3.0] - 2023-10-20
 
 ## Changed

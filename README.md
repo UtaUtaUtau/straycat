@@ -2,7 +2,7 @@
  Yet another WORLD-based UTAU resampler.
 
 # How to use (development version)
- You need to have Python installed. This was made using Python 3.8.10.
+ You need to have Python installed. This was made using Python 3.10.11.
  
  You must install the needed libraries first, which are numpy, scipy, resampy, and pyworld. To do that, you may run a regular pip installation:
  
@@ -80,39 +80,43 @@ optional arguments:
 
 # Example Renders
 
- The renders use straycat 0.2.1. No flags are used in these renders.
+ The renders use straycat 0.3.1. No flags are used in these renders.
 
 **Voicebank**: 櫻花アリス -吾亦紅- / Ouka Alice -Waremokou- / VCV
 
-https://user-images.githubusercontent.com/29729824/214388141-07bc30e3-5068-421f-a871-10bc02b7ef02.mp4
+https://github.com/UtaUtaUtau/straycat/assets/29729824/890c589e-5815-442e-bfaf-a9894cca6454
 
 **Voicebank**: 紅 通常 / Kurenai Normal / VCV
 
-https://user-images.githubusercontent.com/29729824/214388215-fb27cbb4-4242-4423-a928-194a37bcb710.mp4
+https://github.com/UtaUtaUtau/straycat/assets/29729824/308b9253-b69e-489b-81c7-ea614585be8a
 
 **Voicebank**: 戯白メリー 太神楽 / Kohaku Merry Daikagura / VCV
 
-https://user-images.githubusercontent.com/29729824/214388523-7586efb7-f8e3-406e-bf77-23ba84d179f4.mp4
+https://github.com/UtaUtaUtau/straycat/assets/29729824/85a4a7d4-1e2d-4946-b30c-32d259993246
 
 **Voicebank**: 匿名：MERGE / Tokumei MERGE / VCV
 
-https://user-images.githubusercontent.com/29729824/214388931-60b11373-8ad9-44b2-b47f-c422fe15281a.mp4
+https://github.com/UtaUtaUtau/straycat/assets/29729824/6b78bc12-39d2-4e6a-a742-a9fb511d5853
 
 **Voicebank**: 吼音ブシ-武- / Quon Bushi -武- / VCV
 
-https://user-images.githubusercontent.com/29729824/214389016-0413db90-fdfb-4929-a4a0-f41f7eebbe3d.mp4
+https://github.com/UtaUtaUtau/straycat/assets/29729824/9e6164f1-8c93-49b1-9f33-7ea583ae6611
 
 **Voicebank**: 松木マックス SPRUCE(NEO)v2.0 / Matsuki Max SPRUCE (NEO) v2.0 / VCV
 
-https://user-images.githubusercontent.com/29729824/214389127-42546acc-2c77-4096-b6cd-1685e72ef1ee.mp4
+https://github.com/UtaUtaUtau/straycat/assets/29729824/ba5f689d-29ba-4907-a54c-6583aa1d014c
 
 **Voicebank**: 紅 地球 2.0 / Kurenai Earth 2.0 / CVVC
 
-https://user-images.githubusercontent.com/29729824/214389485-14c6677d-8329-4c77-bc9a-90fb26f19de0.mp4
+https://github.com/UtaUtaUtau/straycat/assets/29729824/8464ebd9-4349-43c3-ba81-6c8a64dcbaac
 
 **Voicebank**: 学人デシマル χ / Gakuto Deshimaru Chi / CVVC
 
-https://user-images.githubusercontent.com/29729824/214389797-9a2cdbf9-960d-4f1a-8efd-8266dcd1cacc.mp4
+https://github.com/UtaUtaUtau/straycat/assets/29729824/e90a4159-77dc-4807-81a6-6c602143316c
+
+**Voicebank**: CZloid / English VCCV (uses P0p-1 in CCs)
+
+https://github.com/UtaUtaUtau/straycat/assets/29729824/ed9a1964-8dde-42c7-a4d8-596a9eb663bd
 
 # straycat flags
 

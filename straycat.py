@@ -10,9 +10,10 @@ import scipy.signal as signal # for filtering
 import scipy.interpolate as interp # Interpolator for feats
 import scipy.ndimage as ndimage
 import resampy # Resampler (as in sampling rate stuff)
+from pathlib import Path # path manipulation
 import re
 
-version = '0.3.0'
+version = '0.3.1'
 help_string = '''usage: straycat in_file out_file pitch velocity [flags] [offset] [length] [consonant] [cutoff] [volume] [modulation] [tempo] [pitch_string]
 
 Resamples using the WORLD Vocoder.
@@ -211,13 +212,27 @@ def read_wav(loc):
     Parameters
     ----------
     loc : str or file
-        Input WAV file.
+        Input audio file.
 
     Returns
     -------
     ndarray
         Data read from WAV file remapped to [-1, 1] and in 44.1kHz
     """
+    if type(loc) == str: # make sure input is Path
+        loc = Path(loc)
+
+    exists = loc.exists()
+    if not exists: # check for alternative files
+        for ext in sf.available_formats().keys():
+            loc = loc.with_suffix('.' + ext.lower())
+            exists = loc.exists()
+            if exists:
+                break
+
+    if not exists:
+        raise FileNotFoundError("No supported audio file was found.")
+    
     x, fs = sf.read(loc)
     if len(x.shape) == 2:
         # Average all channels... Probably not too good for formats bigger than stereo
@@ -399,7 +414,7 @@ class Resampler:
         pitch_string : str
             The UTAU pitchbend parameter.
         """
-        self.in_file = in_file
+        self.in_file = Path(in_file)
         self.out_file = out_file
         self.pitch = note_to_midi(pitch)
         self.velocity = float(velocity)
@@ -438,9 +453,8 @@ class Resampler:
             A dictionary of the F0, MGC, BAP, and average F0.
         """
         # Setup cache path file
-        loc, file = os.path.split(self.in_file)
-        fname, _ = os.path.splitext(file)
-        features_path = os.path.join(loc, fname + cache_ext)
+        fname = self.in_file.name
+        features_path = self.in_file.with_suffix(cache_ext)
         features = None
 
         if 'G' in self.flags.keys():
@@ -505,7 +519,8 @@ class Resampler:
         if self.out_file == 'nul':
             logging.info('Null output file. Skipping...')
             return
-        
+        self.out_file = Path(self.out_file)
+
         # Convert percentages to decimal
         vel = np.exp2(1 - self.velocity / 100) # convel is more a multiplier...
         vol = self.volume / 100
@@ -631,22 +646,24 @@ class Resampler:
             breath = 0
             
         #Peak compressor flag
-        peak = 1 - self.flags.get('P', 86) / 100
+        flag_peak = self.flags.get('P', 86)
+        peak = 1 - flag_peak / 100
 
-        rms = np.sqrt(2 * np.sum(sp_render, axis=1) / fft_size ** 2 + 0.000001) # get RMS.. i'm not sure if this is right but i think it's fine
-        rms_peak = np.max(rms)
-        rms_norm = rms / (peak * rms_peak)
+        if flag_peak > 0:
+            rms = np.sqrt(2 * np.sum(sp_render, axis=1) / fft_size ** 2 + 0.000001) # get RMS.. i'm not sure if this is right but i think it's fine
+            rms_peak = np.max(rms)
+            rms_norm = rms / (peak * rms_peak)
 
-        comp = np.zeros(rms_norm.shape)
-        comp[rms_norm >= 1] = rms_norm[rms_norm >= 1] - 1
-        comp = (1 - peak) * comp / np.max(comp)
-        comp = 1 - comp
+            comp = np.zeros(rms_norm.shape)
+            comp[rms_norm >= 1] = rms_norm[rms_norm >= 1] - 1
+            comp = (1 - peak) * comp / np.max(comp)
+            comp = 1 - comp
 
-        comp = ndimage.gaussian_filter1d(comp, 6) 
+            comp = ndimage.gaussian_filter1d(comp, 6) 
 
-        comp = np.vstack([comp] * sp_render.shape[1]).transpose()
-        sp_render *= comp
-        ap_render *= comp
+            comp = np.vstack([comp] * sp_render.shape[1]).transpose()
+            sp_render *= comp
+            ap_render *= comp
 
         # remove pitch in areas with max aperiodicity
         f0_render[np.isclose(husk, 1)] = 0
