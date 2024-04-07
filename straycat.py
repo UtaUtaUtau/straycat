@@ -46,7 +46,7 @@ f0_floor = world.default_f0_floor
 f0_ceil = 1760
 
 # Flags
-flags = ['fe', 'fl', 'fo', 'fv', 'fp', 've', 'vo', 'g', 't', 'A', 'B', 'G', 'P', 'S', 'p']
+flags = ['fe', 'fl', 'fo', 'fv', 'fp', 've', 'vo', 'g', 't', 'A', 'B', 'G', 'P', 'S', 'p', 'MG', 'MD', 'MC']
 flag_re = '|'.join(flags)
 flag_re = f'({flag_re})([+-]?\\d+)?'
 flag_re = re.compile(flag_re)
@@ -519,8 +519,9 @@ class Resampler:
         if self.out_file == 'nul':
             logging.info('Null output file. Skipping...')
             return
+        
         self.out_file = Path(self.out_file)
-
+        
         # Convert percentages to decimal
         vel = np.exp2(1 - self.velocity / 100) # convel is more a multiplier...
         vol = self.volume / 100
@@ -644,6 +645,21 @@ class Resampler:
                 ap_render[np.isclose(husk, 1),:] = 1 # make sure unvoiced areas stay unvoiced... only happens if breathiness is 0 but too much if statements
         else:
             breath = 0
+
+        # Distortion flag
+        if 'MD' in self.flags.keys():
+            logging.info('Adding distortion.')
+            distortion_amount = clip(self.flags['MD'], 0, 100)
+            ap_render = ap_render * (distortion_amount / 10)
+            f0_render = f0_render + np.random.normal(0, distortion_amount, len(f0_render))
+
+        # Coarsness flag
+        if 'MC' in self.flags.keys():
+            logging.info('Adding coarseness.')
+            coarseness = clip(self.flags['MC'], 0, 100)
+            for i in range(len(f0_render)):
+                if i % 6 == 0:
+                    f0_render[i] = 60
             
         #Peak compressor flag
         flag_peak = self.flags.get('P', 86)
@@ -739,7 +755,18 @@ class Resampler:
 
             amt = np.maximum(tremolo * vibrato + 1, 0)
             render = render * amt
-        
+        # Growl flag
+        if 'MG' in self.flags.keys():
+            logging.info('Adding tremolo growl flag.')
+            depth = clip(self.flags['MG'] / 100, 0, 1)
+
+            rate = 75
+
+            time = np.arange(len(render)) / default_fs
+            sine_wave = np.sin(2 * np.pi * rate * time)
+
+            render = render * (2 - depth * sine_wave) / 2
+
         render *= vol # volume
         save_wav(self.out_file, render)
 
