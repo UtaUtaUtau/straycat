@@ -46,7 +46,7 @@ f0_floor = world.default_f0_floor
 f0_ceil = 1760
 
 # Flags
-flags = ['fe', 'fl', 'fo', 'fv', 'fp', 've', 'vo', 'g', 't', 'A', 'B', 'G', 'P', 'S', 'p', 'GR', 'D', 'C']
+flags = ['fe', 'fl', 'fo', 'fv', 'fp', 've', 'vo', 'g', 't', 'A', 'B', 'G', 'P', 'S', 'p', 'R', 'D', 'C']
 flag_re = '|'.join(flags)
 flag_re = f'({flag_re})([+-]?\\d+)?'
 flag_re = re.compile(flag_re)
@@ -756,9 +756,9 @@ class Resampler:
             amt = np.maximum(tremolo * vibrato + 1, 0)
             render = render * amt
         # Growl flag
-        if 'GR' in self.flags.keys():
+        if 'R' in self.flags.keys():
             logging.info('Adding tremolo growl flag.')
-            depth = clip(self.flags['GR'] / 100, 0, 1)
+            depth = clip(self.flags['R'] / 100, 0, 1)
 
             rate = 75
 
