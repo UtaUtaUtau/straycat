@@ -13,7 +13,7 @@ import resampy # Resampler (as in sampling rate stuff)
 from pathlib import Path # path manipulation
 import re
 
-version = '0.3.1'
+version = '0.4.0'
 help_string = '''usage: straycat in_file out_file pitch velocity [flags] [offset] [length] [consonant] [cutoff] [volume] [modulation] [tempo] [pitch_string]
 
 Resamples using the WORLD Vocoder.

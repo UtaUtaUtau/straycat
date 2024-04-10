@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.4.0] - 2024-04-10
+
+## Added
+ - Added growl, distortion, and coarseness flags (GR, D, C) (by Astel)
+
 ## [0.3.1] - 2024-03-24
 
 ## Added
