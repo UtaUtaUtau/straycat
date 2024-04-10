@@ -46,7 +46,7 @@ f0_floor = world.default_f0_floor
 f0_ceil = 1760
 
 # Flags
-flags = ['fe', 'fl', 'fo', 'fv', 'fp', 've', 'vo', 'g', 't', 'A', 'B', 'G', 'P', 'S', 'p', 'MG', 'MD', 'MC']
+flags = ['fe', 'fl', 'fo', 'fv', 'fp', 've', 'vo', 'g', 't', 'A', 'B', 'G', 'P', 'S', 'p', 'GR', 'D', 'C']
 flag_re = '|'.join(flags)
 flag_re = f'({flag_re})([+-]?\\d+)?'
 flag_re = re.compile(flag_re)
@@ -647,16 +647,16 @@ class Resampler:
             breath = 0
 
         # Distortion flag
-        if 'MD' in self.flags.keys():
+        if 'D' in self.flags.keys():
             logging.info('Adding distortion.')
-            distortion_amount = clip(self.flags['MD'], 0, 100)
+            distortion_amount = clip(self.flags['D'], 0, 100)
             ap_render = ap_render * (distortion_amount / 10)
             f0_render = f0_render + np.random.normal(0, distortion_amount, len(f0_render))
 
         # Coarsness flag
-        if 'MC' in self.flags.keys():
+        if 'C' in self.flags.keys():
             logging.info('Adding coarseness.')
-            coarseness = clip(self.flags['MC'], 0, 100)
+            coarseness = clip(self.flags['C'], 0, 100)
             for i in range(len(f0_render)):
                 if i % 6 == 0:
                     f0_render[i] = 60
@@ -756,9 +756,9 @@ class Resampler:
             amt = np.maximum(tremolo * vibrato + 1, 0)
             render = render * amt
         # Growl flag
-        if 'MG' in self.flags.keys():
+        if 'GR' in self.flags.keys():
             logging.info('Adding tremolo growl flag.')
-            depth = clip(self.flags['MG'] / 100, 0, 1)
+            depth = clip(self.flags['GR'] / 100, 0, 1)
 
             rate = 75
 
