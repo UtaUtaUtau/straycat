@@ -1,10 +1,6 @@
 # straycat
  Yet another WORLD-based UTAU resampler.
 
-### Other versions
-
-Astel has made a server version that works with both UTAU and OpenUtau. It may render faster than regular straycat. You can get it [over here.](https://github.com/Astel123457/straycat)
-
 # How to use (development version)
  You need to have Python installed. This was made using Python 3.10.11.
  
@@ -13,7 +9,7 @@ Astel has made a server version that works with both UTAU and OpenUtau. It may r
 ```
 pip install numpy scipy resampy pyworld
 ```
- 
+
 ## Running in UTAU
  1. Download the `straycat.py` file and put it somewhere.
  2. Setup your `.ust` file to have the proper voicebank and wavtool selected.
@@ -21,6 +17,11 @@ pip install numpy scipy resampy pyworld
  4. Change the `Tool2` resampler to the path of `straycat.py`.
 
  You can now open the `.ust` and use `straycat.py` as a resampler. You need to press cancel in the project properties when UTAU shows the project properties panel.
+## Running straycat server (UTAU and OpenUtau)
+ 1. To run straycat server run the straycat server script `python straycat.py`.
+ 2. Put `StrayCatRunner.exe` in your Resampelers folder (OpenUtau only) or wherever else you keep your resamplers.
+ 3. Put `libcurl.dll` in the same folder as `StrayCatRunner.exe` otherwise it will error out and not render anything.
+ 4. Set `StrayCatRunner.exe` as your Resampeler or Tool2 and call to render.
  
 ## Running throught terminal
  Most resamplers can take arguments to render a sample. This resampler only reads the terminal arguments.
@@ -111,3 +112,5 @@ See [Flags Documentation](flag_docs.md)
  This resampler is very slow considering it's written in pure Python. It would actually be pretty fast if it wasn't for Python's packages basically having so much stuff that it makes load times way slower. Python's nature of being an interpreted language might also be a big bottleneck, but Python itself has been considerably fast for me. This is just one of those cases... I could technically speed it up by doing an UTAU specific hack, but it might not work with OpenUtau anymore after this.
  
  I don't want to beat myself down that much for this but the slow speed very much ensures complete compatibility to both OpenUtau and classic UTAU. I guess you could say this would be a resampler in the olden days of single-thread resampling. The new Ameya resamplers are fast because of multiprocessing, and the other WORLD-based resamplers are fast because of their compiled nature. This resampler will always underperform because of Python's interpreted nature. Python was made for scripting after all, as much as so many AI models rely heavily on it.
+
+Running the server is about 3.5x times faster than runnning the pure python implementation. But is Windows only until I can build for linux and mac and package the libraries into the exe itself lol.
