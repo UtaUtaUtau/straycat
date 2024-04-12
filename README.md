@@ -3,7 +3,7 @@
 
 ### Other versions
 
-Astel has made a server version that works with both UTAU and OpenUtau. It may render faster than regular straycat. You can get it [over here.](https://github.com/Astel123457/straycat)
+Astel has made a server version that works with both UTAU and OpenUtau. It may render faster than regular straycat. You can get it [over here.](https://github.com/Astel123457/straycat-server)
 
 # How to use (development version)
  You need to have Python installed. This was made using Python 3.10.11.
